@@ -1,4 +1,5 @@
 class Persona < ApplicationRecord
-  attr_reader :name, :level, :source
-  has_one :arcana
+  belongs_to :arcana
+  has_many :skills, class_name: 'PersonaSkill'
+  has_many :elements, class_name: 'PersonaElement'
 end

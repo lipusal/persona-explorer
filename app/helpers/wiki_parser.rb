@@ -119,8 +119,8 @@ class WikiParser
       v = values[i].text.chomp
       if v == '-'
         v = nil
-      elsif v.index ','
-        v = v.split(',')
+      else
+        v = v.gsub('n/a', 'Not Applicable').split(/[,&\/]/).map(&:strip)
       end
       data[h] = v
     end

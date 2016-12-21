@@ -15,6 +15,12 @@ ActiveRecord::Schema.define(version: 20161211004846) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "affinities", id: false, force: :cascade do |t|
+    t.integer "persona_id", null: false
+    t.integer "element_id", null: false
+    t.string  "effect"
+  end
+
   create_table "arcanas", force: :cascade do |t|
     t.text     "name"
     t.datetime "created_at", null: false
@@ -25,12 +31,6 @@ ActiveRecord::Schema.define(version: 20161211004846) do
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-  end
-
-  create_table "persona_elements", id: false, force: :cascade do |t|
-    t.integer "persona_id", null: false
-    t.integer "element_id", null: false
-    t.string  "effect"
   end
 
   create_table "persona_skills", id: false, force: :cascade do |t|

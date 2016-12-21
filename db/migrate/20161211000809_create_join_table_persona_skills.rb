@@ -4,6 +4,8 @@ class CreateJoinTablePersonaSkills < ActiveRecord::Migration[5.0]
       t.string :cost
       t.integer :level
 
+      t.timestamps
+
       # t.index [:persona_id, :skill_id]
       # t.index [:skill_id, :persona_id]
     end

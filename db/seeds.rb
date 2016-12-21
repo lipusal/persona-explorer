@@ -56,15 +56,17 @@ data.each_pair do |arcana, personas|
         reject { |k, v| k == 'Inherit' || v.nil? }.
         each do |effect, elems|
           elems.each do |e|
-            p.elements.create!(element: Element.find_by!(name: e), effect: effect)
+            p.affinities.create!(element: Element.find_by!(name: e), effect: effect)
           end
         end
     end
 
     # Skills
-    persona[:skills].each_pair do |skill_name, attrs|
-      skill = Skill.find_or_create_by!(name: skill_name, effect: attrs[:effect])
-      p.skills.create! cost: attrs[:cost], level: attrs[:level], skill: skill
+    if persona.has_key?(:skills)
+      persona[:skills].each_pair do |skill_name, attrs|
+        skill = Skill.find_or_create_by!(name: skill_name, effect: attrs[:effect])
+        p.skills.create! cost: attrs[:cost], level: attrs[:level], skill: skill
+      end
     end
   end
 end

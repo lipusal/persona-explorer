@@ -19,3 +19,9 @@
 
 # Ignore Byebug command history file.
 .byebug_history
+
+# Downloaded wiki pages
+/wiki/
+
+# Contains potentially identifying information
+/tips/join-tables.txt

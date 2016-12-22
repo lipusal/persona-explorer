@@ -1,0 +1,8 @@
+Scripts run outside of the rails context, so they can't autoload project classes or gems. Two ways to fix this are:
+
+1) Start script with a #!bin/rails runner shebang which makes the script run under the rails runner interpreter rather
+    than the ruby interpreter. The rails runner interpreter knows about the rails application context. Doesn't work on
+    W4ndows.
+
+2) require 'environment.rb'. This file is basically what sets all the application context, so if included the script can
+    be run even with the default ruby interpreter, it can be debugged, etc. Works 4 W4ndows.

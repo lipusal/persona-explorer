@@ -3,5 +3,5 @@ Rails.application.routes.draw do
 
   root 'home#index'
 
-  resources :persona, only: [:show]
+  resources :persona, only: [:index, :show]
 end

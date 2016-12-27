@@ -12,7 +12,7 @@ class Persona < ApplicationRecord
   end
 
   def to_s
-    "#{name} (#{level})"
+    "#{name} (##{level})"
   end
 
   def self.strong_against(element)

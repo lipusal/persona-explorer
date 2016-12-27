@@ -1,0 +1,1 @@
+- Use https://rails-assets.org/ to manage JS plugins with gems once the SSL certificates problem gets fixed on windows

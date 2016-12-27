@@ -1,0 +1,24 @@
+= render 'shared/nav'
+
+%main
+  .section.no-pad-bot{id: 'index-banner'}
+    .container
+      %h1.header.center.orange-text
+        = "#{@personas.size} personas available"
+
+      .row
+        .col.s12
+          %table.striped
+            %tr
+              %th.center Name
+              %th.center Arcana
+              %th.center Level
+            - @personas.each do |persona|
+              %tr
+                %td.center= link_to(persona.name, persona)
+                - #TODO: Enable arcana routing for Arcana links to work
+                -#%td.center= link_to(persona.arcana.name, persona.arcana)
+                %td.center= persona.arcana.name
+                %td.center= persona.level
+
+= render 'shared/footer'

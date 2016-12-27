@@ -1,5 +1,9 @@
 = render 'shared/nav'
 
+-# TODO: Get a frontend management tool and require datatables more nicely
+%link{rel: "stylesheet", type: "text/css", href: "https://cdn.datatables.net/v/dt/dt-1.10.13/cr-1.3.2/fh-3.1.2/kt-2.2.0/se-1.2.0/datatables.css"}
+%script{type: "text/javascript", src: "https://cdn.datatables.net/v/dt/dt-1.10.13/cr-1.3.2/fh-3.1.2/kt-2.2.0/se-1.2.0/datatables.js"}
+
 %main
   .section.no-pad-bot{id: 'index-banner'}
     .container
@@ -8,17 +12,35 @@
 
       .row
         .col.s12
-          %table.striped
-            %tr
-              %th.center Name
-              %th.center Arcana
-              %th.center Level
-            - @personas.each do |persona|
+          %table.striped{id: 'personas'}
+            %thead
               %tr
-                %td.center= link_to(persona.name, persona)
-                - #TODO: Enable arcana routing for Arcana links to work
-                -#%td.center= link_to(persona.arcana.name, persona.arcana)
-                %td.center= persona.arcana.name
-                %td.center= persona.level
+                %th.center Name
+                %th.center Arcana
+                %th.center Level
+            %tbody
+              - @personas.each do |persona|
+                %tr
+                  %td.center= link_to(persona.name, persona)
+                  - #TODO: Enable arcana routing for Arcana links to work
+                  -#%td.center= link_to(persona.arcana.name, persona.arcana)
+                  %td.center= persona.arcana.name
+                  %td.center= persona.level
 
 = render 'shared/footer'
+
+:javascript
+    $(function(){
+      console.log("Starting");
+      $('#personas').DataTable({
+        //Options
+        paging: false,
+        pageLength: -1,
+
+        //Plugins
+        colReorder: true,
+        fixedHeader: true,
+        // keys: true,
+        // select: true
+      });
+    });

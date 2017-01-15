@@ -14,8 +14,9 @@ puts 'Retrieving Persona 3 data, this will take a while...'
 require 'pry'
 require 'json'
 
-# Uncomment this to actually query Wiki and write results to JSON file
-# File.write(File.join(File.dirname(__FILE__), 'seeds.json'), WikiParser.instance.get_personas.to_json)
+# Uncomment the following lines to update persona data
+# download = false
+# File.write(File.join(File.dirname(__FILE__), 'seeds.json'), WikiParser.new(download).get_p3_personas.to_json)
 
 data = HashWithIndifferentAccess.new(
   JSON.parse(File.read(File.join(File.dirname(__FILE__), 'seeds.json'))).to_h

@@ -1,26 +1,29 @@
 require 'nokogiri'
-require 'singleton'
 require 'open-uri'
 
 class WikiParser
-  include Singleton
-
   BASE_URL = 'http://megamitensei.wikia.com'.freeze
   PERSONA_3_LIST_URL = "#{BASE_URL}/wiki/List_of_Persona_3_Personas".freeze
 
+  # Initializes a new parser. If online, all data will be fetched from the wiki. Otherwise, data will be fetched from
+  # locally-downloaded pages (which must exist, see download_wiki.rb for this)
+  def initialize(online = false)
+    @online = online
+  end
+
   # Gets all Persona 3 FES arcanas.
   def get_p3_arcanas
-    page = Nokogiri::HTML(open(WikiParser::PERSONA_3_LIST_URL))
+    page = Nokogiri::HTML(open(get_persona_list_uri))
     page.css('.mw-headline a').map {|arcana| arcana.text}
   end
 
   # Gets all personas grouped by arcana
-  def get_personas
+  def get_p3_personas
     # Thanks to http://ruby.bastardsbook.com/chapters/html-parsing/
 
-    page = Nokogiri::HTML(open(WikiParser::PERSONA_3_LIST_URL))
+    page = Nokogiri::HTML(open(get_persona_list_uri))
     arcanas = page.css('.mw-headline a').map {|arcana| arcana.text}   # Duplicated code - but avoids making 2 requests to the same page
-    personas = Hash.new { |hash, key| hash[key] = Array.new }
+    grouped_personas = Hash.new { |hash, key| hash[key] = Array.new }
 
     page.css('table.table.p3').each_with_index do |table, index|
       arcana = arcanas[index]
@@ -32,9 +35,9 @@ class WikiParser
           if cell.child.name == 'abbr'
             data[:other] = cell.child[:title]
           end
-          personas[arcana] << data
+          grouped_personas[arcana] << data
         elsif cell.name == 'td'
-          data = personas[arcana].last
+          data = grouped_personas[arcana].last
           data[:name] = cell.text.chomp  #Some names have a trailing \n, chomp discards it
           data[:source] = WikiParser::BASE_URL + cell.child[:href]
         else
@@ -43,20 +46,22 @@ class WikiParser
       end
     end
 
-    personas.each_value do |persona_group|
-      persona_group.each do |persona|
-        puts "Analyzing #{persona[:name]} from #{persona[:source]} ..."
-        persona.merge!(get_detailed_info persona[:source])
+    grouped_personas.each_value do |arcana|
+      arcana.each do |persona|
+        uri = get_persona_uri(persona)
+        puts "Analyzing #{persona[:name]} from #{uri} ..."
+        persona.merge!(get_detailed_info open(uri))
       end
     end
 
-    personas
+    grouped_personas
   end
 
-  # Gets detailed info about a persona, given its wiki URL. Obtains stats, resistances, etc.
-  def get_detailed_info(url)
+  # Gets detailed info about a persona, given its wiki page's HTML (which may be obtained online or from a local copy)
+  # Obtains stats, resistances, etc.
+  def get_detailed_info(html)
     result = {}
-    page = Nokogiri::HTML(open(url))
+    page = Nokogiri::HTML(html)
     # No easy identifiers, so get where the section starts, where the next section starts, and look at all tables in between
     # TODO: Use XPath to use less code
     start_elem = page.css('span.mw-headline[id^="Persona_3"]').last
@@ -78,6 +83,13 @@ class WikiParser
 
   private
 
+  def get_persona_list_uri
+    @online ? PERSONA_3_LIST_URL : File.join(File.dirname(__FILE__), '..', '..', 'wiki', 'List_of_Persona_3_Personas.html')
+  end
+
+  def get_persona_uri(persona)
+    @online ? persona.source : File.join(File.dirname(__FILE__), '..', '..', 'wiki', 'P3', "#{persona[:name]}.html")
+  end
 
   def extract_table_info(table)
     subtables = table.css '.customtable'
@@ -157,8 +169,6 @@ class WikiParser
 end
 
 # require 'pp'
-# personas = WikiParser.instance.get_personas
-# puts "Analyzed personas in #{personas.size} arcanas:"
-# pp personas
-# pp WikiParser.instance.get_detailed_info 'http://megamitensei.wikia.com/wiki/Pyro_Jack'
-# 'http://megamitensei.wikia.com/wiki/Black_Frost'
+# require_relative '../../config/environment.rb'
+# p = WikiParser.new
+# pp(p.get_p3_personas)

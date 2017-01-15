@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161211004846) do
+ActiveRecord::Schema.define(version: 20170115172402) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,14 @@ ActiveRecord::Schema.define(version: 20161211004846) do
     t.integer "level"
   end
 
+  create_table "persona_stats", id: false, force: :cascade do |t|
+    t.integer  "persona_id", null: false
+    t.integer  "stat_id",    null: false
+    t.integer  "value"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "personas", force: :cascade do |t|
     t.string   "name"
     t.integer  "arcana_id"
@@ -52,6 +60,12 @@ ActiveRecord::Schema.define(version: 20161211004846) do
   create_table "skills", force: :cascade do |t|
     t.string   "name"
     t.text     "effect"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "stats", force: :cascade do |t|
+    t.text     "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

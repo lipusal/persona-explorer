@@ -2,6 +2,7 @@ class Persona < ApplicationRecord
   belongs_to :arcana
   has_many :skills, :class_name => 'PersonaSkill'
   has_many :affinities
+  has_many :stats, :class_name => 'PersonaStat'
 
   def weaknesses
     affinities.select { |a| a.effect =~ /Weak/ }

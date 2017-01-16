@@ -24,6 +24,11 @@ data = HashWithIndifferentAccess.new(
 
 # Create all arcanas
 Arcana.create!(data.keys.map{ |arcana| {name: arcana} }) if Arcana.first.blank?
+puts "Created #{Arcana.count} arcanas"
+
+# Create all stats
+Stat.create! %w[Strength Magic Endurance Agility Luck].map { |name| {name: name} }
+puts "Created #{Stat.count} stats"
 
 # Create all resistance/weakness/etc elements
 elements = Set.new
@@ -43,12 +48,23 @@ data.values.each do |personas|
   end
 end
 Element.create!(elements.map { |elem| {name: elem} }) if Element.first.blank?
+puts "Created #{Element.count} elements"
 
+puts "Creating personas with their stats/data, this may take a while..."
 # Create all personas and relations
 data.each_pair do |arcana, personas|
   personas.each do |persona|
     #TODO create 'other' column
     p = Persona.create!(name: persona[:name], level: persona[:level], source: persona[:source], arcana: Arcana.find_by!(name: arcana))
+
+    # Stats
+    if persona.has_key?(:stats)
+      persona[:stats].each do |name, value|
+        p.stats.create!(stat: Stat.find_by!(name: name), value: value)
+      end
+    else
+      puts "#{persona[:name]} has no stats key, skipping"
+    end
 
     # Resistances/weaknesses
     if persona.has_key?(:resistances)
@@ -71,5 +87,6 @@ data.each_pair do |arcana, personas|
     end
   end
 end
+puts "Created #{Persona.count} personas"
 
 puts 'Done'

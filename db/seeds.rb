@@ -65,7 +65,7 @@ puts "Creating personas with their stats/data, this may take a while..."
 data.each_pair do |arcana, personas|
   personas.each do |persona|
     #TODO create 'other' column
-    p = Persona.create!(name: persona[:name], level: persona[:level], source: persona[:source], arcana: Arcana.find_by!(name: arcana))
+    p = Persona.create!(name: persona[:name], level: persona[:level], img: persona[:img], source: persona[:source], arcana: Arcana.find_by!(name: arcana))
 
     # Stats
     if persona.has_key?(:stats)

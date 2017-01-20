@@ -62,13 +62,14 @@ class WikiParser
   def get_detailed_info(html)
     result = {}
     page = Nokogiri::HTML(html)
+    result[:img] = extract_image(page)
     # No easy identifiers, so get where the section starts, where the next section starts, and look at all tables in between
     # TODO: Use XPath to use less code
     start_elem = page.css('span.mw-headline[id^="Persona_3"]').last
     elem = start_elem.parent.next
     until elem.name == 'h3' || elem.name == 'h2' || elem.nil?  # Reached next game, next section or EOF
       if elem.name == 'table'
-        result = extract_table_info elem
+        result.merge!(extract_table_info elem)
       elsif elem.name == 'div' && elem[:class] =~ /tabber/
         elem.css('.tabbertab > table').each do |table|
           result.merge!(extract_table_info table)
@@ -165,6 +166,17 @@ class WikiParser
     end
 
     data
+  end
+
+  # Get's a Persona's first presented image, if it exists.
+  #
+  # + page The Nokogiri'd object of the <b>entire</b> persona's wiki page.
+  # + returns The image's src attribute or nil if not found
+  def extract_image(page)
+    imgs = page.css('.thumbimage')
+    return unless imgs
+    img = imgs.reject { |img| img[:src].starts_with? 'data:' }.first
+    img[:src]
   end
 end
 

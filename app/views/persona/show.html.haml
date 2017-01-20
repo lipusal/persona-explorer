@@ -6,6 +6,10 @@
       %h1.header.center.orange-text
         = "#{@persona.name} (#{@persona.arcana.name})"
 
+      - if @persona.img
+        .col.s12.center
+          = image_tag @persona.img
+
       #stats
         %h4 Stats
         %p

@@ -22,6 +22,16 @@ data = HashWithIndifferentAccess.new(
   JSON.parse(File.read(File.join(File.dirname(__FILE__), 'seeds.json'))).to_h
 )
 
+truncate_if_not_empty = true
+if Persona.count > 0 && truncate_if_not_empty
+  puts 'Database not empty, truncating'
+  function_sql = File.read(File.join(File.dirname(__FILE__), 'truncate.sql'))
+  connection = ActiveRecord::Base.connection
+  connection.exec_query(function_sql)
+  connection.exec_query('SELECT truncate_tables(\'persona\')')
+  puts 'Truncated, proceeding'
+end
+
 # Create all arcanas
 Arcana.create!(data.keys.map{ |arcana| {name: arcana} }) if Arcana.first.blank?
 puts "Created #{Arcana.count} arcanas"

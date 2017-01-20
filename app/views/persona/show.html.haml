@@ -15,7 +15,15 @@
           %b Level:
           = @persona.level || 'Inherit (from what?)'
         %p
-          %b Strength, etc.: TODO
+          %table.striped
+            %tr
+              - @persona.stats.each do |stat|
+                %th.center
+                  = stat.name
+            %tr
+              - @persona.stats.each do |stat|
+                %td.center
+                  = stat.value
 
       .row.col.s12.divider
 

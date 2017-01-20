@@ -37,6 +37,6 @@
           %tr
             - Element.basic.each do |element|
               %td.center
-                = @persona.affinities.find {|a| a.element == element}.try(:effect) || '-'
+                = @persona.affinities.find {|a| a.element == element}.try(:present).try(:html_safe) || '-'
 
 = render 'shared/footer'

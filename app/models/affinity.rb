@@ -10,11 +10,11 @@ class Affinity < ActiveRecord::Base
   def present
     color = case effect
       when 'Absorbs', 'Reflects', 'Block'
-        'blue'
+        'limegreen'
       when 'Weak'
         'red'
       when 'Resists'
-        'green'
+        'royalblue'
       else
         Rails.logger.warn "Unrecognized affinity effect #{effect}, defaulting to black color"
         'black'

@@ -97,7 +97,7 @@ class WikiParser
     data = {}
     # Stats and resistances are always tables 0 and 1
     data[:stats] = extract_stats (subtables[0])
-    data[:resistances] = extract_resistances(subtables[1])
+    data[:resistances] = extract_affinities(subtables[1])
     # Not all following sections are necessarily present, so use an index
     index = 2
     unless (subtables[2].css('a[title="Skill Card"]') + subtables[2].css('a[title="Heart Item"]')).empty?
@@ -122,7 +122,7 @@ class WikiParser
     stats
   end
 
-  def extract_resistances(table)
+  def extract_affinities(table)
     data = {}
     headers = table.css('tr:nth-child(1) th')
     values = table.css('tr:nth-child(2) td')

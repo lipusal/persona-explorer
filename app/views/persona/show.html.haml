@@ -43,4 +43,22 @@
               %td.center
                 = @persona.affinities.find {|a| a.element == element}.try(:present).try(:html_safe) || '-'
 
+      .row.col.s12.divider
+
+      #skills
+        %h4 Skills
+        %table.striped
+          %tr
+            %th.center Name
+            %th.center Effect
+            %th.center Cost
+            %th.center Unlocked at level
+          - @persona.skills.each do |skill|
+            %tr
+              %td.center
+                %b= skill.name
+              %td.center= skill.effect
+              %td.center= skill.cost
+              %td.center= skill.level || 'Innate'
+
 = render 'shared/footer'

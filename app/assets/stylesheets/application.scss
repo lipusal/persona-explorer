@@ -30,3 +30,8 @@ body {
 main {
   flex: 1 0 auto;
 }
+
+#persona-breadcrumbs a:first-child {
+  line-height: 37px;
+  margin-left: 10px;
+}

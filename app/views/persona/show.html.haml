@@ -1,7 +1,12 @@
 = render 'shared/nav'
 
 %main
+  #persona-breadcrumbs.col.s12.light-blue.darken-1
+    %a.breadcrumb{href: "/persona"} All Personas
+    %a.breadcrumb{href: "#!"}= @persona.name
+
   .section.no-pad-bot{id: 'index-banner'}
+
     .container
       %h1.header.center.orange-text
         = "#{@persona.name} (#{@persona.arcana.name})"

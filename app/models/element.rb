@@ -4,7 +4,7 @@ class Element < ApplicationRecord
   # has_many :persona_affinities
   # has_many :personas, through: :persona_affinities
 
-  #TODO Normalize elements
+  #TODO Normalize elements (e.g. Elec != Electricity)
 
   def self.basic
     Element.all.reject do |e|

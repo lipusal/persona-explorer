@@ -56,7 +56,7 @@
               %br
               %br
               - Arcana.all.each do |a|
-                = check_box_tag :arcana, a.name, false, id: "arcana_#{a.name}"
+                = check_box_tag 'arcana[]', a.name, false, id: "arcana_#{a.name}"
                 = label_tag "arcana_#{a.name}", a.name
 
           .row.col.s12.divider
@@ -75,10 +75,23 @@
               Persona should:
               %br
               %br
-              = select_tag :affinity_rel, options_for_select(%w[Resist Block Absorb Reflect Be\ weak\ against ]), class: 'col s6'
-              = select_tag :affinity_val, options_for_select(Element.basic.pluck(:name)), class: 'col s6'
-              %button.btn.waves-effect.waves-light
-                TODO add more affinities
+              = @affinity_relations_tag = select_tag 'affinity_rel[]', options_from_collection_for_select(PersonaSearchHelper.effects_map, 'effect', 'string'), class: 'col s6'
+              = @affinity_values_tag = select_tag 'affinity_val[]', options_for_select(Element.basic.pluck(:name)), class: 'col s6'
+              %button#add_affinity.btn.waves-effect.waves-light{type: 'button'}
+                Add affinity
+
+              :javascript
+                $(function(){
+                  $('#add_affinity').on('click', function() {
+                    var $relations = $('#{@affinity_relations_tag.gsub(/\n/, '')}');
+                    var $values = $('#{@affinity_values_tag.gsub(/\n/, '')}');
+                    $relations.insertBefore(this);
+                    $relations.material_select();
+                    $values.insertBefore(this);
+                    $values.material_select();
+                  });
+                });
+
 
           .row.col.s12.divider
 
@@ -144,12 +157,22 @@
     $(function(){
       $('select').material_select();
 
+      var sections = ['level', 'arcana', 'affinities'];
+
+      //Auto-enable each section when their inputs change
+      sections.forEach(function(section) {
+        var $form = $('#' + section + '_form');
+        $form.on('change', 'input[name!='+section+'_filter],select', function() {
+          $form.find('#' + section + '_filter').prop('checked', $form.serialize() !== section+'_filter=1');
+        });
+      });
+
       $('#submit').on('click', function() {
           //Gather all data
           var data = '';
-          ['level', 'arcana', 'affinities'].forEach(function(section) {
+          sections.forEach(function(section) {
             var $form = $('#' + section + '_form');
-            if($form.find('#' + section + '_filter').val()) {
+            if($form.find('#' + section + '_filter').is(':checked')) {
               data += (data === '' ? '' : '&') + $form.serialize();
             }
           });

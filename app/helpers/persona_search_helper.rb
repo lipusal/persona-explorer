@@ -38,14 +38,14 @@ module PersonaSearchHelper
     return result unless params[:affinities_rel].present? && params[:affinity_rel].present? && params[:affinity_val].present?
 
     relationship_map = Hashie::Mash.new('and': 'INTERSECT', 'or': 'UNION')
-    relationship = relationship_map[params[:affinities_rel].try(:downcase)]
+    relationship = relationship_map[params[:affinities_rel].try(:downcase)] || 'UNION'
     return result if relationship.nil?
 
-    affinity_rels, affinity_vals = params[:affinity_rel], [:affinity_val]
+    affinity_rels, affinity_vals = params[:affinity_rel], params[:affinity_val]
     return unless affinity_rels.length === affinity_vals.length
 
     select = 'SELECT personas.id FROM personas JOIN affinities ON affinities.persona_id = personas.id JOIN elements on affinities.element_id = elements.id WHERE '
-    sql = select
+    sql = select.dup
     (0...affinity_rels.length).each do |i|
       sql << " #{relationship} #{select}" if i > 0
       sql << "elements.name = '#{affinity_vals[i]}' AND affinities.effect = '#{affinity_rels[i]}'"

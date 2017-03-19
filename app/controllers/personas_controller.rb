@@ -1,9 +1,11 @@
 class PersonasController < ApplicationController
 
   def index
-    # @arcanas = Arcana.all
-    @personas = Persona.all
-    # @grouped_personas = @personas.group_by &:arcana
+    @personas = if (search_params = search_params_slice(params)).empty?
+        Persona.all
+      else
+        PersonaSearchHelper.search(search_params)
+      end
   end
 
   def show
@@ -15,5 +17,11 @@ class PersonasController < ApplicationController
       # TODO: Rails doesn't seem to pick up parameter arrays (sending affinities multiple times just picks up the last one)
       @personas = Persona.strong_against(Element.find_by(name: params[:affinities]))
     end
+  end
+
+  private
+
+  def search_params_slice(params)
+    params.slice(:level_filter, :level_rel, :level, :arcana_filter, :arcana, :affinities_rel, :affinity_rel, :affinity_val)
   end
 end

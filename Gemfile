@@ -31,6 +31,8 @@ gem 'jbuilder', '~> 2.5'
 
 gem 'haml'
 
+gem 'hashie'
+
 gem 'materialize-sass'
 
 group :development, :test do

@@ -5,5 +5,5 @@ Rails.application.routes.draw do
 
   resources :personas, only: [:index, :show]
 
-  get '/advanced_search', to: 'persona#advanced_search'
+  get '/advanced_search', to: 'personas#advanced_search'
 end

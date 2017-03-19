@@ -5,11 +5,11 @@ class Persona < ApplicationRecord
   has_many :stats, :class_name => 'PersonaStat'
 
   def weaknesses
-    affinities.select { |a| a.effect =~ /Weak/ }
+    @weaknesses ||= affinities.select { |a| a.effect =~ /Weak/ }
   end
 
   def strengths
-    affinities - weaknesses
+    @strengths ||= affinities - weaknesses
   end
 
   def to_s

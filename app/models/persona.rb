@@ -16,11 +16,11 @@ class Persona < ApplicationRecord
     "#{name} (##{level})"
   end
 
-  def self.strong_against(element)
-    Persona.joins(:affinities).where('element_id = ? AND effect != ?', element.id, 'Weak')
+  def self.strong_against(*elements)
+    Persona.joins(:affinities).where('element_id IN (?) AND effect != ?', elements.map {|e| e.id}.join(','), 'Weak')
   end
 
-  def self.weak_against(element)
-    Persona.joins(:affinities).where('element_id = ? AND effect = ?', element.id, 'Weak')
+  def self.weak_against(*elements)
+    Persona.joins(:affinities).where('element_id IN (?) AND effect = ?', elements.map {|e| e.id}.join(','), 'Weak')
   end
 end

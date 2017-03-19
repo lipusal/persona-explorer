@@ -5,13 +5,17 @@
 
     %ul.right.hide-on-med-and-down
       %li
-        %a{href: '#'}
-          Navbar Link
+        -# TODO: Use newer/prettier syntax for links
+        =link_to "All Personas", "/persona/"
+      %li
+        =link_to "Advanced Search", "/advanced_search/" #controller: "persona", action: "advanced_search"
 
     %ul.side-nav{id: 'nav-mobile'}
       %li
-        %a{href: '#'}
-          Navbar Link
+        -# TODO: Use newer/prettier syntax for links
+        =link_to "All Personas", "/persona/" #controller: "persona", action: "show"
+      %li
+        =link_to "Advanced Search", "/persona/advanced-search/" #controller: "persona", action: "advanced_search"
     %a.button-collapse{href: '#', 'data-activates' => 'nav-mobile'}
       %i.material-icons
         menu

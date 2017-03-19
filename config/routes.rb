@@ -3,5 +3,7 @@ Rails.application.routes.draw do
 
   root 'home#index'
 
-  resources :persona, only: [:index, :show]
+  resources :personas, only: [:index, :show]
+
+  get '/advanced_search', to: 'persona#advanced_search'
 end

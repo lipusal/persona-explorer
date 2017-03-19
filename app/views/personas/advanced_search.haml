@@ -10,15 +10,98 @@
       %h1.header.center.orange-text
         Persona Advanced Search
 
-      Select Personas that are strong against:
-      %form{action: ""}
-        %select#affinities{name: 'affinities', multiple: true}
-          - Element.all.each do |e|
-            %option{value: e.name}
-              =e.name
+      .row
+        .col.s3
+          %h5 Categories
+          %hr
+          %ul
+            %li Level
+            %li Arcana
+            %li Affinities
+            %li Skills?
+            %li Stats?
 
-        %button.btn.waves-effect.waves-light{type: 'submit'}
-          Submit
+        .col.s9
+          .row
+            %h5 Level
+            %form#level_form
+              = check_box_tag :level_filter
+              = label_tag :level_filter, 'Enabled'
+              %br
+              Persona's level should be
+              %br
+              -#%br
+              = radio_button_tag :level_rel, '<', false, id: 'level_lt'
+              = label_tag :level_lt, 'below ( < )'
+              = radio_button_tag :level_rel, '<=', false, id: 'level_lte'
+              = label_tag :level_lte, 'at most ( <= )'
+              = radio_button_tag :level_rel, '=', false, id: 'level_eq'
+              = label_tag :level_eq, 'exactly ( = )'
+              = radio_button_tag :level_rel, '>=', false, id: 'level_gte'
+              = label_tag :level_gte, 'at least ( >= )'
+              = radio_button_tag :level_rel, '>', false, id: 'level_gt'
+              = label_tag :level_gt, 'above ( > )'
+              .input-field
+                = text_field_tag :level, nil, maxlength:3, placeholder: '1-100', pattern: '\d{1,3}', class: 'col s2'
+
+          .row.col.s12.divider
+
+          .row
+            %h5 Arcana
+            %form#arcana_form
+              = check_box_tag :arcana_filter
+              = label_tag :arcana_filter, 'Enabled'
+              %br
+              Persona's arcana should be any of:
+              %br
+              %br
+              - Arcana.all.each do |a|
+                = check_box_tag :arcana, a.name, false, id: "arcana_#{a.name}"
+                = label_tag "arcana_#{a.name}", a.name
+
+          .row.col.s12.divider
+
+          .row
+            %h5 Affinities
+            %form#affinities_form
+              = check_box_tag :affinities_filter
+              = label_tag :affinities_filter, 'Enabled'
+              %br
+              = radio_button_tag :affinities_rel, 'and', false, id: 'affinities_rel_and'
+              = label_tag :affinities_rel_and, 'Match ALL of the following (ANDs)'
+              = radio_button_tag :affinities_rel, 'or', false, id: 'affinities_rel_or'
+              = label_tag :affinities_rel_or, 'Match ANY of the following (ORs)'
+              %br
+              Persona should:
+              %br
+              %br
+              = select_tag :affinity_rel, options_for_select(%w[Resist Block Absorb Reflect Be\ weak\ against ]), class: 'col s6'
+              = select_tag :affinity_val, options_for_select(Element.basic.pluck(:name)), class: 'col s6'
+              %button.btn.waves-effect.waves-light
+                TODO add more affinities
+
+          .row.col.s12.divider
+
+          .row
+            %h5 TODO skills (Persona should have the following innate skills)
+
+          -#.row
+          -#  Select Personas that are strong against:
+          -#  %form{action: ""}
+          -#    %select#affinities{name: 'affinities', multiple: true}
+          -#      - Element.all.each do |e|
+          -#        %option{value: e.name}
+          -#          =e.name
+          -#
+          -#    %button.btn.waves-effect.waves-light{type: 'submit'}
+          -#      Submit
+
+          .row
+            .center
+              %button#submit.btn-large.waves-effect.waves-light
+                SUBMIT
+                %i.material-icons.right
+                  send
 
       -if @personas.present?
         .row
@@ -60,4 +143,16 @@
 :javascript
     $(function(){
       $('select').material_select();
+
+      $('#submit').on('click', function() {
+          //Gather all data
+          var data = '';
+          ['level', 'arcana', 'affinities'].forEach(function(section) {
+            var $form = $('#' + section + '_form');
+            if($form.find('#' + section + '_filter').val()) {
+              data += (data === '' ? '' : '&') + $form.serialize();
+            }
+          });
+          window.location = '/personas?' + data;
+      });
     });
